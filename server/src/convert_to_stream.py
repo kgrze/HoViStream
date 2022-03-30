@@ -2,17 +2,53 @@
 
 import os
 import sys
+import subprocess
 
-if len(sys.argv) < 2:
-    print('Please specify path to video file')
+def ffmpeg_encode_video(path_input_video, path_output, scale):
+    cmd = ['sudo', 'ffmpeg']
+    cmd.append('-y')
+    cmd.append('-i')
+    cmd.append(path_input_video)
+    cmd.append('-c:v')
+    cmd.append('libx264')
+    cmd.append('-r')
+    cmd.append('24')
+    cmd.append('-x264opts')
+    cmd.append('keyint=48:min-keyint=48:no-scenecut')
+    cmd.append('-vf')
+    cmd.append('scale=-2:'+scale)
+    cmd.append('-maxrate')
+    cmd.append('6000K')
+    cmd.append('-movflags')
+    cmd.append('faststart')
+    cmd.append('-bufsize')
+    cmd.append('8600K')
+    cmd.append('-profile:v')
+    cmd.append('main')
+    cmd.append('-preset')
+    cmd.append('fast')
+    cmd.append('-an')
+    output = os.path.join(path_output, 'video_'+scale+'p'+'.mp4')
+    cmd.append(output)
+
+    print(cmd)
+    subprocess.call(cmd)
+
+if len(sys.argv) < 3:
+    print('Please specify paths to input video file and output stream location')
     sys.exit()
 
-path_video  = sys.argv[1]
+path_input_video  = sys.argv[1]
+if os.path.exists(path_input_video) is False:
+    print('Specified video file path: {} does not exist'.format(path_input_video))
 
-if os.path.exists(path_video) is False:
-    print('Specified video file path: {} does not exist'.format(path_video))
+path_output  = sys.argv[2]
+if os.path.exists(path_output) is False:
+    print('Specified output path: {} does not exist'.format(path_output))
 
-#python convert_to_stream.py ~/Videos/House.Of.Gucci.2021.1080p.AMZN.WEBRip.DDP5.1.Atmos.x264-TEPES/HOG.mp4
+ffmpeg_encode_video(path_input_video, path_output, '720')
+
+#python convert_to_stream.py ~/Videos/House.Of.Gucci.2021.1080p.AMZN.WEBRip.DDP5.1.Atmos.x264-TEPES/HOG.mp4 .
 
 # sudo ffmpeg -y -i batman.mp4 -c:v libx264 \
 #  -r 24 -x264opts 'keyint=48:min-keyint=48:no-scenecut' \
