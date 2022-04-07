@@ -12,9 +12,9 @@ sudo chmod 755 /usr/local/bin/packager
 sudo chown -R $USER:$USER /etc/nginx
 sudo chmod 755 -R /etc/nginx/*
 
-sudo chown -R $USER:$USER /var/www
-sudo chmod 755 -R /var/www/*
+rm -rf /home/kgrze/HoViStream
 
-sudo rm -rf /var/www
-sudo mkdir -p /var/www/html
-sudo mkdir -p /var/www/media
+mkdir -p /home/kgrze/HoViStream/www/html
+mkdir -p /home/kgrze/HoViStream/www/stream
+mkdir -p /home/kgrze/HoViStream/media
+echo "HoViStream initialization finished."
