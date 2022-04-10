@@ -4,6 +4,7 @@ sudo apt install nginx-full
 sudo apt install ffmpeg
 sudo apt install gpac
 sudo apt install youtube-dl
+sudo apt install qnapi
 python -m pip install jinja2
 wget https://github.com/shaka-project/shaka-packager/releases/download/v2.6.1/packager-linux-x64
 
