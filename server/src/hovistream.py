@@ -2,7 +2,7 @@
 
 import os
 import sys
-import mimetypes
+import subprocess
 
 path_in_media = '/home/kgrze/HoViStream/media'
 path_out_stream = '/home/kgrze/HoViStream/www/stream'
@@ -23,6 +23,15 @@ def is_subtitles_file(path):
             if file_ext[1] in ['srt', 'vtt']:
                 return file_path
     return None
+
+# sudo visudo
+# "kgrze ALL=(ALL) NOPASSWD: /bin/systemctl reload nginx.service"
+def refresh_nginx():
+    cmd = ['sudo']
+    cmd.append('systemctl')
+    cmd.append('reload')
+    cmd.append('nginx.service')
+    subprocess.call(cmd)
 
 list_video = []
 for root, _, items in os.walk(path_in_media):
