@@ -16,7 +16,12 @@ sudo chmod 755 -R /etc/nginx/*
 
 rm -rf /home/kgrze/HoViStream
 
-mkdir -p /home/kgrze/HoViStream/www/html
-mkdir -p /home/kgrze/HoViStream/www/stream
-mkdir -p /home/kgrze/HoViStream/media
-echo "HoViStream initialization finished."
+mkdir -p /home/$USER/HoViStream/www/html
+mkdir -p /home/$USER/HoViStream/www/stream
+mkdir -p /home/$USER/HoViStream/media
+echo 'HoViStream initialization finished.'
+echo '1. Copy movies to /home/$USER/HoViStream/media'
+echo '2. Run hovistream.py script'
+echo '3. Run "ip addr show" to see what is Your IP address'
+echo '4. Open web browser and type "http://<your IP address>" and You should see the list of movies available for local streaming.'
+echo 'Enjoy !!!'
