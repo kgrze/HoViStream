@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
 import os
-import sys
+import shutil
 import subprocess
+from generate_web_interface import generate_web_interface
 
 path_in_media = '/home/kgrze/HoViStream/media'
 path_out_stream = '/home/kgrze/HoViStream/www/stream'
@@ -33,6 +34,9 @@ def refresh_nginx():
     cmd.append('nginx.service')
     subprocess.call(cmd)
 
+shutil.rmtree(path_out_stream)
+os.mkdir(path_out_stream)
+
 list_video = []
 for root, _, items in os.walk(path_in_media):
     for item in items:
@@ -47,3 +51,5 @@ for root, _, items in os.walk(path_in_media):
                 video_item.append(path_subs)
             list_video.append(video_item)
 print(list_video)
+#generate_web_interface(path_out_stream, '/home/kgrze/HoViStream/www')
+#refresh_nginx()
