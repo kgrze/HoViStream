@@ -4,8 +4,10 @@ import os
 import shutil
 import subprocess
 from generate_web_interface import generate_web_interface
+from convert_to_stream import conv_to_stream
 
 path_in_media = '/home/kgrze/HoViStream/media'
+path_out_web_interface = '/home/kgrze/HoViStream/www'
 path_out_stream = '/home/kgrze/HoViStream/www/stream'
 
 def is_video_file(path):
@@ -34,8 +36,9 @@ def refresh_nginx():
     cmd.append('nginx.service')
     subprocess.call(cmd)
 
-shutil.rmtree(path_out_stream)
-os.mkdir(path_out_stream)
+if os.path.exists(path_out_stream):
+    shutil.rmtree(path_out_stream)
+os.makedirs(path_out_stream)
 
 list_video = []
 for root, _, items in os.walk(path_in_media):
@@ -50,6 +53,11 @@ for root, _, items in os.walk(path_in_media):
             if path_subs is not None:
                 video_item.append(path_subs)
             list_video.append(video_item)
-print(list_video)
-#generate_web_interface(path_out_stream, '/home/kgrze/HoViStream/www')
-#refresh_nginx()
+for video in list_video:
+    name_stream = video[0]
+    path_stream = os.path.join(path_out_stream, name_stream)
+    path_video = video[1]
+    path_subs = video[2]
+    conv_to_stream(path_video, path_stream, path_subs)
+generate_web_interface(path_out_stream, path_out_web_interface)
+refresh_nginx()

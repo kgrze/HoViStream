@@ -9,9 +9,8 @@ def generate_web_interface(path_input_stream, path_output_html):
     path_template = '.'
     path_index_html_full = os.path.join(path_output_html, index_html_name)
     
-    shutil.rmtree(path_output_html)
-    # if os.path.isfile(path_index_html_full) is True:
-    #     os.remove(path_index_html_full)
+    if os.path.exists(path_output_html) is False:
+        os.makedirs(path_output_html)
 
     j2_env = Environment(loader=FileSystemLoader(path_template),trim_blocks=True)
 
@@ -38,7 +37,6 @@ def generate_web_interface(path_input_stream, path_output_html):
     html.write('\t</body>\n')
     html.write('</html>')
     html.close()
-
     print('Main page written to '+path_index_html_full)
 
 # generate_web_interface('/home/kgrze/HoViStream/www/stream', '/home/kgrze/HoViStream/www')

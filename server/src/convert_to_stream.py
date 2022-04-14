@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import os
-import sys
 import subprocess
 
 def ffmpeg_convert_video(path_input_video, path_output, scale):
@@ -152,15 +151,6 @@ def conv_to_stream(path_input_video, path_output_stream_location, path_input_sub
     os.remove(path_video_2360)
     os.remove(path_audio)
     os.remove(path_subs)
-
-if len(sys.argv) < 3:
-    print('Please specify paths to input video file and output stream location')
-    sys.exit()
-
-if len(sys.argv) == 4:
-    conv_to_stream(sys.argv[1], os.path.abspath(sys.argv[2]), os.path.abspath(sys.argv[3]))
-else:
-    conv_to_stream(sys.argv[1], os.path.abspath(sys.argv[2]))
 
 #python convert_to_stream.py ~/Videos/House.Of.Gucci.2021.1080p.AMZN.WEBRip.DDP5.1.Atmos.x264-TEPES/HOG.mp4 .
 
