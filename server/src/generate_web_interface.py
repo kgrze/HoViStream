@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os
-import shutil
+import glob
 from jinja2 import Environment, FileSystemLoader
 
 def generate_web_interface(path_input_stream, path_output_html):
@@ -11,7 +11,11 @@ def generate_web_interface(path_input_stream, path_output_html):
     
     if os.path.exists(path_output_html) is False:
         os.makedirs(path_output_html)
-
+    else:
+        html_files = glob.glob(path_output_html+'/*.html')
+        for file in html_files:
+            os.remove(file)
+            
     j2_env = Environment(loader=FileSystemLoader(path_template),trim_blocks=True)
 
     html = open(path_index_html_full,"w+")
