@@ -58,6 +58,6 @@ for video in list_video:
     path_stream = os.path.join(path_out_stream, name_stream)
     path_video = video[1]
     path_subs = video[2]
-    conv_to_stream(path_video, path_stream, path_subs)
+    conv_to_stream(path_video, path_stream, True, path_subs)
 generate_web_interface(path_out_stream, path_out_web_interface)
 refresh_nginx()
