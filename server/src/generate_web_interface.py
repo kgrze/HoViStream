@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 
 import os
+import sys
 import glob
 from jinja2 import Environment, FileSystemLoader
 
 def generate_web_interface(path_input_stream, path_output_html):
     index_html_name = 'index.html'
-    path_template = '.'
+    path_template = './templates'
     path_index_html_full = os.path.join(path_output_html, index_html_name)
     
     if os.path.exists(path_output_html) is False:
@@ -43,4 +44,9 @@ def generate_web_interface(path_input_stream, path_output_html):
     html.close()
     print('Main page written to '+path_index_html_full)
 
-# generate_web_interface('/home/kgrze/HoViStream/www/stream', '/home/kgrze/HoViStream/www')
+if __name__ == '__main__':
+    if len(sys.argv) < 3:
+        print('Please specify paths to input stream and output html location')
+        sys.exit()
+    else:
+        generate_web_interface(os.path.abspath(sys.argv[1]), os.path.abspath(sys.argv[2]))
