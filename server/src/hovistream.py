@@ -88,4 +88,4 @@ if __name__ == '__main__':
     else:
         hovistream(os.path.abspath(sys.argv[1]), os.path.abspath(sys.argv[2]))
 
-# ./hovistream "/home/kgrze/HoViStream/media" "/home/kgrze/HoViStream/www"
+# ./hovistream "/home/$USER/HoViStream/media" "/home/$USER/HoViStream/www"
