@@ -48,32 +48,52 @@ def refresh_nginx(path_out_stream_www):
 
 def hovistream(path_in_video, path_out_stream_www, no_encoding=True):
     path_out_stream = os.path.join(path_out_stream_www, 'stream')
+    path_db_video = os.path.join(path_out_stream_www,'stream_list.txt')
+    list_prev_streams = []
+    db_video = None
+    if os.path.exists(path_db_video) is True:
+        # Video list file exists, read it and delete it
+        db_video = open(path_db_video,"r")
+        list_prev_streams = db_video.readlines()
+        db_video.close()
+        os.remove(path_db_video)
     if os.path.exists(path_out_stream_www) is False:
         os.makedirs(path_out_stream_www)
     db_video = open(os.path.join(path_out_stream_www,'stream_list.txt'),"w+")
-    list_video = []
+    list_new_streams = []
+    list_streams = []
     for root, _, items in os.walk(path_in_video):
         for item in items:
             video_item = []
             file_path = os.path.join(root, item)
             if is_video_file(file_path):
                 vide_title = os.path.basename(file_path).split('.')[0]
-                if vide_title in db_video.read():
+                list_streams.append(vide_title)
+                if vide_title+'\n' in list_prev_streams:
+                    # Stream already exists
                     continue
                 else:
+                    # Stream doesn't exist, need to convert video to stream
                     video_item.append(vide_title)
                     video_item.append(file_path)
                     path_subs = is_subtitles_file(root)
                     if path_subs is not None:
                         video_item.append(path_subs)
-                    list_video.append(video_item)
-    for video in list_video:
+                    list_new_streams.append(video_item)
+    for video in list_new_streams:
         name_stream = video[0]
         path_stream = os.path.join(path_out_stream, name_stream)
         path_video = video[1]
         path_subs = video[2]
         conv_to_stream(path_video, path_stream, no_encoding, path_subs)
-        db_video.write(name_stream+'\n')
+    for stream_string in list_prev_streams:
+        stream = stream_string.split('\n')[0]
+        if stream not in list_streams:
+            # stream source has been deleted, delete the stream
+            path_stream = os.path.join(path_out_stream, stream)
+            shutil.rmtree(path_stream)
+    for stream in list_streams:
+        db_video.write(stream+'\n')
     db_video.close()
     generate_web_interface(path_out_stream, path_out_stream_www)
     refresh_nginx(path_out_stream_www)

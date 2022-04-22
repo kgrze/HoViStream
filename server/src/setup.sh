@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+sudo apt install python
 sudo apt install ffmpeg
 sudo apt install gpac
 sudo apt install youtube-dl
