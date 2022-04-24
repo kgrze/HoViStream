@@ -109,10 +109,10 @@ def ffmpeg_extract_subtitles(path_input_video, path_output):
     cmd.append(output)
     subprocess.call(cmd)
     if os.path.isfile(output):
-        return None
-    else:
         subprocess.call(['chmod', '755', output])
         return output
+    else:
+        return None
 
 def qnapi_download_subtitles(path_input_video, path_output):
     subs_name = os.path.basename(path_input_video).split('.')[0]+'.srt'
@@ -194,7 +194,8 @@ def conv_to_stream(path_input_video, path_output_stream_location, no_encoding=Fa
         os.remove(path_video_2360)
 
     os.remove(path_audio)
-    os.remove(path_subs)
+    if path_subs is not None:
+        os.remove(path_subs)
 
 if __name__ == '__main__':
     if len(sys.argv) < 3:

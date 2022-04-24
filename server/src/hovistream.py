@@ -67,7 +67,7 @@ def hovistream(path_in_video, path_out_stream_www, no_encoding=True):
             video_item = []
             file_path = os.path.join(root, item)
             if is_video_file(file_path):
-                vide_title = os.path.basename(file_path).split('.')[0]
+                vide_title = os.path.basename(file_path)
                 list_streams.append(vide_title)
                 if vide_title+'\n' in list_prev_streams:
                     # Stream already exists
@@ -84,7 +84,8 @@ def hovistream(path_in_video, path_out_stream_www, no_encoding=True):
         name_stream = video[0]
         path_stream = os.path.join(path_out_stream, name_stream)
         path_video = video[1]
-        path_subs = video[2]
+        if len(video) > 2:
+            path_subs = video[2]
         conv_to_stream(path_video, path_stream, no_encoding, path_subs)
     for stream_string in list_prev_streams:
         stream = stream_string.split('\n')[0]
