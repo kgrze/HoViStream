@@ -97,8 +97,11 @@ def ffmpeg_convert_subtitles_to_vtt(path_input_subtitles, path_output):
     output = os.path.join(path_output, out_name)
     cmd.append(output)
     subprocess.call(cmd)
-    subprocess.call(['chmod', '755', output])
-    return output
+    if os.path.isfile(output):
+        subprocess.call(['chmod', '755', output])
+        return output
+    else:
+        return None
 
 def ffmpeg_extract_subtitles(path_input_video, path_output):
     cmd = ['ffmpeg']
@@ -173,7 +176,7 @@ def conv_to_stream(path_input_video, path_output_stream_location, no_encoding=Fa
     path_subs = None
     if path_input_subtitles is not None:
         path_subs = ffmpeg_convert_subtitles_to_vtt(path_input_subtitles, path_output_stream_location)
-    else:
+    if path_subs is None:
         path_subs = ffmpeg_extract_subtitles(path_input_video, path_output_stream_location)
         if path_subs is None:
             path_subs = qnapi_download_subtitles(path_input_video, path_output_stream_location)
