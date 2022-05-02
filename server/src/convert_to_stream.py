@@ -4,6 +4,16 @@ import os
 import sys
 import subprocess
 
+def is_subtitles_file(path):
+    """Check file extension to detect valid subtitle file"""
+    for root, _, items in os.walk(path):
+        for item in items:
+            file_path = os.path.join(root, item)
+            file_ext = file_path.rsplit('.', 1)
+            if file_ext[1] in ['srt', 'vtt']:
+                return file_path
+    return None
+
 def ffmpeg_convert_video(path_input_video, path_output, scale):
     if scale in [1280, 1920, 2360]:
         cmd = ['ffmpeg']
@@ -118,8 +128,6 @@ def ffmpeg_extract_subtitles(path_input_video, path_output):
         return None
 
 def qnapi_download_subtitles(path_input_video, path_output):
-    subs_name = os.path.basename(path_input_video).split('.')[0]+'.srt'
-    path_input_subs = os.path.join(path_input_video, subs_name)
     cmd = ['qnapi']
     cmd.append('-c')
     cmd.append('-l')
@@ -128,12 +136,12 @@ def qnapi_download_subtitles(path_input_video, path_output):
     cmd.append('en')
     cmd.append(path_input_video)
     subprocess.call(cmd)
-    if os.path.exists(path_input_subs) is False:
-        return None
-    else:
-        subprocess.call(['chmod', '755', subs_name])
-        path_output_subs = ffmpeg_convert_subtitles_to_vtt(path_input_subs, path_output)
-        return path_output_subs
+    path_input_video_parent = os.path.abspath(os.path.dirname(path_input_video))
+    path_qnapi_subs = is_subtitles_file(path_input_video_parent)
+    path_output_subs = ffmpeg_convert_subtitles_to_vtt(path_qnapi_subs, path_output)
+    subprocess.call(['chmod', '755', path_output_subs])
+    print('kgrze subs '+path_output_subs)
+    return path_output_subs
 
 def shaka_pack_to_dash_hls(path_1280, path_1920, path_2360, path_audio, path_subs=None, path_output='.'):
     cmd = ['packager']
