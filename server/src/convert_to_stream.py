@@ -130,18 +130,23 @@ def ffmpeg_extract_subtitles(path_input_video, path_output):
 def qnapi_download_subtitles(path_input_video, path_output):
     cmd = ['qnapi']
     cmd.append('-c')
+    cmd.append('-q')
+    cmd.append('-d')
     cmd.append('-l')
     cmd.append('pl')
     cmd.append('-lb')
     cmd.append('en')
     cmd.append(path_input_video)
     subprocess.call(cmd)
-    path_input_video_parent = os.path.abspath(os.path.dirname(path_input_video))
-    path_qnapi_subs = is_subtitles_file(path_input_video_parent)
-    path_output_subs = ffmpeg_convert_subtitles_to_vtt(path_qnapi_subs, path_output)
-    subprocess.call(['chmod', '755', path_output_subs])
-    print('kgrze subs '+path_output_subs)
-    return path_output_subs
+    path_input_video_no_ext, ext = os.path.splitext(path_input_video)
+    path_subs = path_input_video_no_ext + '.srt'
+    # path_input_video_parent = os.path.abspath(os.path.dirname(path_input_video))
+    # path_qnapi_subs = is_subtitles_file(path_input_video_parent)
+    if os.path.isfile(path_subs):
+        path_output_subs = ffmpeg_convert_subtitles_to_vtt(path_subs, path_output)
+        return path_output_subs
+    else:
+        return None
 
 def shaka_pack_to_dash_hls(path_1280, path_1920, path_2360, path_audio, path_subs=None, path_output='.'):
     cmd = ['packager']

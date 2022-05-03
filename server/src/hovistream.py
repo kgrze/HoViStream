@@ -76,14 +76,12 @@ def hovistream(path_in_video, path_out_stream_www, no_encoding=True):
                     #Stream doesn't exist, need to convert video to stream
                     video_item.append(video_title)
                     video_item.append(file_path)
-                    video_item.append(is_subtitles_file(root))
                     list_new_streams.append(video_item)
     for video in list_new_streams:
         name_stream = video[0]
         path_stream = os.path.join(path_out_stream, name_stream)
         path_video = video[1]
-        path_subs = video[2]
-        conv_to_stream(path_video, path_stream, no_encoding, path_subs)
+        conv_to_stream(path_video, path_stream, no_encoding)
     for stream_string in list_prev_streams:
         stream = stream_string.split('\n')[0]
         if stream not in list_streams:
