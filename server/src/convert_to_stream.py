@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# author: kgrze
 
 import os
 import sys
@@ -26,7 +27,7 @@ def is_subtitles_file(path):
     return None
 
 def ffmpeg_convert_video(path_input_video, path_output, scale):
-    if scale in [1280, 1920, 2360]:
+    if scale in [1280, 1920, 2048]:
         cmd = ['ffmpeg']
         cmd.append('-y')
         cmd.append('-i')
@@ -83,11 +84,11 @@ def ffmpeg_copy_video(path_input_video, path_output):
     return output
 
 def ffmpeg_check_orig_req(path_input_video):
-    cmd = ['ffprobe']
-    cmd.append(path_input_video)
-    result = subprocess.run(cmd, substdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
-    ffprobe_out = result.stdout
-    if 'Video: h264' in ffprobe_out:
+    # cmd = ['ffprobe']
+    # cmd.append(path_input_video)
+    # result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+    # ffprobe_out = result.stdout
+    if '264' in path_input_video:
         return True
     return False
 
@@ -169,12 +170,12 @@ def qnapi_download_subtitles(path_input_video, path_output):
     else:
         return None
 
-def shaka_pack_to_dash_hls(path_1280, path_1920, path_2360, path_audio, path_subs=None, path_output='.'):
+def shaka_pack_to_dash_hls(path_1280, path_1920, path_2048, path_audio, path_subs=None, path_output='.'):
     cmd = ['packager']
     cmd.append('in='+path_audio+',stream=audio,init_segment=audio/init.mp4,segment_template=audio/$Number$.m4s')
     cmd.append('in='+path_1280+',stream=video,init_segment=h264_1280/init.mp4,segment_template=h264_1280/$Number$.m4s')
     cmd.append('in='+path_1920+',stream=video,init_segment=h264_1920/init.mp4,segment_template=h264_1920/$Number$.m4s')
-    cmd.append('in='+path_2360+',stream=video,init_segment=h264_2360/init.mp4,segment_template=h264_2360/$Number$.m4s')
+    cmd.append('in='+path_2048+',stream=video,init_segment=h264_2048/init.mp4,segment_template=h264_2048/$Number$.m4s')
     if path_subs is not None:
         cmd.append('in='+path_subs+',stream=text,init_segment=text/init.mp4,segment_template=text/$Number$.m4s,dash_only=1')
         cmd.append('in='+path_subs+',stream=text,segment_template=text/$Number$.vtt,hls_only=1')
@@ -224,13 +225,18 @@ def conv_to_stream(path_input_video, path_output_stream_location, no_encoding=Fa
         shaka_pack_to_dash_hls_orig(path_video, path_audio, path_subs, path_output_stream_location)
         os.remove(path_video)
     else:
-        path_video_1280 = ffmpeg_convert_video(path_input_video, path_output_stream_location, 1280)
-        path_video_1920 = ffmpeg_convert_video(path_input_video, path_output_stream_location, 1920)
-        path_video_2360 = ffmpeg_convert_video(path_input_video, path_output_stream_location, 2360)
-        shaka_pack_to_dash_hls(path_video_1280, path_video_1920, path_video_2360, path_audio, path_subs, path_output_stream_location)
-        os.remove(path_video_1280)
-        os.remove(path_video_1920)
-        os.remove(path_video_2360)
+        if ffmpeg_check_orig_req(path_input_video):
+            path_video = ffmpeg_copy_video(path_input_video, path_output_stream_location)
+            shaka_pack_to_dash_hls_orig(path_video, path_audio, path_subs, path_output_stream_location)
+            os.remove(path_video)
+        else:
+            path_video_1280 = ffmpeg_convert_video(path_input_video, path_output_stream_location, 1280)
+            path_video_1920 = ffmpeg_convert_video(path_input_video, path_output_stream_location, 1920)
+            path_video_2048 = ffmpeg_convert_video(path_input_video, path_output_stream_location, 2048)
+            shaka_pack_to_dash_hls(path_video_1280, path_video_1920, path_video_2048, path_audio, path_subs, path_output_stream_location)
+            os.remove(path_video_1280)
+            os.remove(path_video_1920)
+            os.remove(path_video_2048)
 
     os.remove(path_audio)
     if path_subs is not None:

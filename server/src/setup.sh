@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
+# author: kgrze
 
-sudo apt install python
+#sudo apt install python
 sudo apt install ffmpeg
 sudo apt install gpac
 sudo apt install youtube-dl

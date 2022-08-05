@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# author: kgrze
 
 import os
 import sys
@@ -46,7 +47,7 @@ def refresh_nginx(path_out_stream_www):
     cmd.append('nginx.service')
     subprocess.call(cmd)
 
-def hovistream(path_in_video, path_out_stream_www, no_encoding=True):
+def hovistream(path_in_video, path_out_stream_www, no_encoding=False):
     path_out_stream = os.path.join(path_out_stream_www, 'stream')
     path_db_video = os.path.join(path_out_stream_www,'stream_list.txt')
     list_prev_streams = []
